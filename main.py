@@ -59,6 +59,8 @@ def build_text_for_analysis(messages, id_to_name):
     for msg in reversed(messages):
         if msg.get("type") != "message" or not msg.get("text"):
             continue
+        if msg.get("subtype") == "bot_message" or msg.get("bot_id"):
+            continue
         name = id_to_name.get(msg.get("user", ""), "不明")
         lines.append(f"【{name}】\n{msg['text']}")
     return "\n\n---\n\n".join(lines)
@@ -83,6 +85,9 @@ USER_PROMPT_TEMPLATE = """\
 2. 同じ人のタスクリストが複数回登場する場合は「最新のもの」を使う
 3. 取り消し線のないタスクのみ「未完了」として抽出する
 4. 取り消し線の判定: ~テキスト~ 形式（チルダで囲まれている）= 完了済み
+5. ①②③…の番号付きタスクは番号順にすべて漏れなく抽出する
+6. タスクへのコメント・メモ（→以降の文章）はタスク名に含めない
+7. 「〇〇さん、以下のタスクが未完了です」のようなリマインド通知文は無視する
 
 必ずJSONのみを返してください（説明文は不要）:
 {{
