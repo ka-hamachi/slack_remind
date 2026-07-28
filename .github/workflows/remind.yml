@@ -1,0 +1,28 @@
+name: Daily Task Reminder
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # UTC 05:00 = JST 14:00
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run reminder
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          SLACK_NOTIFY_CHANNEL_ID: ${{ secrets.SLACK_NOTIFY_CHANNEL_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DAYS_BACK: ${{ secrets.DAYS_BACK }}
+        run: python main.py
