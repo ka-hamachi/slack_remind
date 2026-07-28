@@ -17,7 +17,7 @@ ai = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
 CHANNEL_ID = os.environ["SLACK_CHANNEL_ID"]
 NOTIFY_CHANNEL_ID = os.environ.get("SLACK_NOTIFY_CHANNEL_ID", CHANNEL_ID)
-DAYS_BACK = int(os.environ.get("DAYS_BACK", "60"))
+DAYS_BACK = int(os.environ.get("DAYS_BACK") or "60")
 
 
 def fetch_messages():
